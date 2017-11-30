@@ -1,8 +1,10 @@
 #!/bin/ksh -e
 
+set -x
+
 ZONEPATH=$1
 OUTPATH=$2
-VERSION=${3:-0.151.1}
+VERSION=${3:-2017.0.0.0}
 
 if [[ -z $ZONEPATH || -z $OUTPATH ]]; then
     print -u2 "Usage: $0 <zone root> <output file> [version]"
@@ -12,11 +14,12 @@ fi
 
 PKGLIST="pkg:/compress/bzip2 pkg:/compress/gzip pkg:/developer/dtrace pkg:/developer/linker"
 PKGLIST="${PKGLIST} pkg:/editor/vim pkg:/network/ftp pkg:/network/ssh pkg:/network/ssh/ssh-key"
-PKGLIST="${PKGLIST} pkg:/package/pkg pkg:/service/management/sysidtool pkg:/service/network/ssh"
+PKGLIST="${PKGLIST} pkg:/package/pkg pkg:/service/network/ssh"
 PKGLIST="${PKGLIST} pkg:/shell/bash pkg:/system/extended-system-utilities"
 PKGLIST="${PKGLIST} pkg:/system/file-system/autofs pkg:/system/file-system/nfs"
-PKGLIST="${PKGLIST} pkg:/system/management/sysidtool pkg:/system/network pkg:/system/network/routing"
+PKGLIST="${PKGLIST} pkg:/system/network pkg:/system/network/routing"
 PKGLIST="${PKGLIST} pkg:/text/doctools"
+PKGLIST="${PKGLIST} pkg:/developer/versioning/git pkg:/developer/documentation-tool/doxygen developer/gcc-5@ pkg:/developer/build/autoconf" 
 
 ZROOT=$ZONEPATH/root
 
@@ -31,11 +34,12 @@ mkdir $ZROOT
 
 echo "=== Creating image and doing base install"
 
-pkg image-create -f --zone --full -p openindiana.org=http://pkg.openindiana.org/dev $ZROOT
+pkg image-create -f --zone --full $ZROOT
 export PKG_IMAGE=$ZROOT
+pkg set-publisher -g http://pkg.openindiana.org/hipster openindiana.org
 [[ -d /var/pkg/download ]] && export PKG_CACHEDIR=/var/pkg/download
 
-pkg install -q --no-refresh --no-index entire@0.5.11-${VERSION}
+pkg install --no-refresh --no-index entire@0.5.11-${VERSION}
 # We pipe through cat to get the happily logable output
 pkg install --no-refresh --no-index SUNWcs SUNWcsd ${PKGLIST} | cat
 
@@ -57,7 +61,7 @@ gsed -i -e "1s/^root::/root:NP:/"  ${ZROOT}/etc/shadow
 
 echo "=== Priming first-boot configuration"
 
-/usr/sbin/sysidconfig -b $ZROOT -a /lib/svc/method/sshd
+echo /usr/sbin/sysidconfig -b $ZROOT -a /lib/svc/method/sshd
 
 echo "=== Archiving"
 ZPATHFS=$(zfs list -Ho name ${ZONEPATH})
