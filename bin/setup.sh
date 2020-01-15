@@ -17,9 +17,15 @@ PKGLIST="${PKGLIST} pkg:/editor/vim pkg:/network/ftp pkg:/network/ssh pkg:/netwo
 PKGLIST="${PKGLIST} pkg:/package/pkg pkg:/service/network/ssh"
 PKGLIST="${PKGLIST} pkg:/shell/bash pkg:/system/extended-system-utilities"
 PKGLIST="${PKGLIST} pkg:/system/file-system/autofs pkg:/system/file-system/nfs"
-PKGLIST="${PKGLIST} pkg:/system/network pkg:/system/network/routing"
+PKGLIST="${PKGLIST} pkg:/system/network pkg:/system/network/routing pkg:/service/network/network-clients pkg:/security/sudo"
 PKGLIST="${PKGLIST} pkg:/text/doctools"
-PKGLIST="${PKGLIST} pkg:/developer/versioning/git pkg:/developer/documentation-tool/doxygen developer/gcc-5@ pkg:/developer/build/autoconf" 
+# LDAP-Client
+PKGLIST="${PKGLIST} pkg:/system/mozilla-nss pkg:/system/network/nis"
+# developer tools
+PKGLIST="${PKGLIST} pkg:/developer/versioning/git"
+PKGLIST="${PKGLIST} pkg:/developer/documentation-tool/doxygen"
+PKGLIST="${PKGLIST} pkg:/developer/gcc-5@ pkg:/developer/build/autoconf" 
+PKGLIST="${PKGLIST} pkg:/network/rsync"
 
 ZROOT=$ZONEPATH/root
 
